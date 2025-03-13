@@ -1,0 +1,34 @@
+import boto3
+
+# AWS Configuration
+AWS_REGION = "us-east-1"
+INSTANCE_TYPE = "t2.micro"
+AMI_ID = "ami-0c55b159cbfafe1f0"  # Update with your preferred AMI
+KEY_NAME = "my-key-pair"
+SECURITY_GROUP = "my-security-group"
+SUBNET_ID = "subnet-12345678"
+
+# Number of instances to launch
+INSTANCE_COUNT = 5  
+
+# Initialize EC2 Client
+ec2 = boto3.client("ec2", region_name=AWS_REGION)
+
+# Launch EC2 Instances
+response = ec2.run_instances(
+    ImageId=AMI_ID,
+    InstanceType=INSTANCE_TYPE,
+    KeyName=KEY_NAME,
+    MinCount=INSTANCE_COUNT,
+    MaxCount=INSTANCE_COUNT,
+    SecurityGroupIds=[SECURITY_GROUP],
+    SubnetId=SUBNET_ID,
+    TagSpecifications=[{
+        "ResourceType": "instance",
+        "Tags": [{"Key": "Project", "Value": "Automation"}]
+    }]
+)
+
+# Print Instance Details
+for instance in response["Instances"]:
+    print(f"Instance ID: {instance['InstanceId']} launched successfully in {AWS_REGION}")
